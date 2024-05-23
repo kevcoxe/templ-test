@@ -1,5 +1,7 @@
 # Build.
-FROM golang:1.20 AS build-stage
+ARG GO_VERSION=1.21.6
+# Build.
+FROM golang:${GO_VERSION} AS build-stage
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
