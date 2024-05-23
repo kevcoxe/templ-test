@@ -23,7 +23,7 @@ func messageForm() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col p-2 m-2 grow\"><form id=\"countsForm\" hx-post=\"/message\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"flex flex-col\"><label>Send a message</label> <input name=\"message\" placeholder=\"hello there!\" class=\"px-4 py-2 mx-2 my-4 text-black rounded-md\"> <button type=\"Send\" class=\"btn-light\">Login</button></form></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col p-2 m-2 grow\"><form id=\"countsForm\" hx-post=\"/message\" hx-target=\"body\" hx-swap=\"outerHTML\" class=\"flex flex-col\"><label>Send a message</label> <input name=\"message\" placeholder=\"hello there!\" class=\"px-4 py-2 mx-2 my-4 text-black rounded-md\"> <button type=\"Submit\" class=\"btn-light\">Send Message</button></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
