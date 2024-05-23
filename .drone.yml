@@ -1,0 +1,80 @@
+---
+name: build-and-deploy
+type: docker
+kind: pipeline
+
+# Global trigger for push event
+trigger:
+  event:
+    - push
+    - tag
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
+
+steps:
+  - name: Build dev image
+    image: docker
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker build -t kevcoxe/templ-test-dev:${DRONE_COMMIT_SHA:0:7} .
+      - docker tag kevcoxe/templ-test-dev:${DRONE_COMMIT_SHA:0:7} kevcoxe/templ-test-dev:latest
+    when:
+      event:
+        exclude:
+          - tag
+
+  - name: Start dev docker image
+    image: docker:dind
+    depends_on:
+      - Build dev image
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker stop templ-test-dev || true
+      - sleep 20
+      - docker rm templ-test-dev || true
+      - sleep 20
+      - docker run --name templ-test-dev --rm -d -p 3400:3400 kevcoxe/templ-test-dev:latest
+    when:
+      event:
+        exclude:
+          - tag
+
+  - name: Build image
+    image: docker
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker build -t kevcoxe/templ-test:${DRONE_COMMIT_SHA:0:7} .
+      - docker tag kevcoxe/templ-test:${DRONE_COMMIT_SHA:0:7} kevcoxe/templ-test:latest
+    when:
+      branch:
+        - main
+      event:
+        exclude:
+          - tag
+
+  - name: Start docker image
+    image: docker:dind
+    depends_on:
+      - Build image
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - docker stop templ-test-prod || true
+      - docker rm templ-test-prod || true
+      - docker run --name templ-test-prod --rm -d -p 3410:3400 kevcoxe/templ-test:latest
+    when:
+      branch:
+        - main
+      event:
+        exclude:
+          - tag
