@@ -1,6 +1,9 @@
 package components
 
-import "strconv"
+import (
+	"strconv"
+	"github.com/alexedwards/scs/v2"
+)
 
 templ counts(global, user int) {
 	<div>Global: { strconv.Itoa(global) }</div>
@@ -8,7 +11,15 @@ templ counts(global, user int) {
 }
 
 templ form() {
-	<form action="/" method="POST" class="flex flex-col">
+	<form
+		id="countsForm"
+		action="/"
+		method="POST"
+		hx-post="/"
+		hx-target="body"
+		hx-swap="outerHTML"
+		class="flex flex-col"
+	>
 		<button
 			type="submit"
 			name="global"
@@ -24,12 +35,14 @@ templ form() {
 }
 
 
-templ HomePage(global, user int) {
+templ HomePage(global, user int, ctx context.Context, sm *scs.SessionManager) {
 	@layout() {
-		<div class="flex flex-col m-2 p-2 ring-4 ring-red-600 grow">
-			<h1 class="text-xl">Hello there yolo this is a test</h1>
-			@counts(global, user)
-			@form()
-		</div>
+		@auth(ctx, sm) {
+			<div class="flex flex-col p-2 m-2 grow">
+				<h1 class="text-xl">Hello, { getUsername(ctx, sm) }</h1>
+				@counts(global, user)
+				@form()
+			</div>
+		}
 	}
 }

@@ -1,0 +1,64 @@
+package components
+
+import "github.com/alexedwards/scs/v2"
+
+templ loginForm(ctx context.Context, sm *scs.SessionManager) {
+  <div class="flex flex-col p-2 m-2 grow">
+    <form
+      id="countsForm"
+      hx-put="/login"
+      hx-target="body"
+      hx-swap="outerHTML"
+      class="flex flex-col"
+    >
+      <input
+        name="username"
+        placeholder="username"
+        class="px-1 py-2 mx-2 my-4 text-black rounded-md"
+      ></input>
+      if getUsernameError(ctx, sm) != "" {
+        <label class="text-red-600">{ getUsernameError(ctx, sm) }</label>
+      }
+      <button
+        type="submit"
+        class="btn-light"
+      >Login</button>
+    </form>
+  </div>
+}
+
+templ logout() {
+  <form
+    id="countsForm"
+    hx-delete="/logout"
+    hx-target="body"
+    hx-swap="outerHTML"
+    class="flex flex-col"
+  >
+    <button
+      type="submit"
+      class="btn-light"
+    >Logout</button>
+  </form>
+}
+
+func getUsername (ctx context.Context, sm *scs.SessionManager) string {
+  var username = sm.GetString(ctx, "username")
+  return username
+}
+
+func getUsernameError (ctx context.Context, sm *scs.SessionManager) string {
+  var usernameError = sm.GetString(ctx, "usernameError")
+  return usernameError
+}
+
+templ auth(ctx context.Context, sm *scs.SessionManager) {
+  if getUsername(ctx, sm) != "" {
+    <div class="flex flex-col w-full h-full">
+      @logout()
+      { children... }
+    </div>
+  } else {
+    @loginForm(ctx, sm)
+  }
+}
