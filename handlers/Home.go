@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kevcoxe/templ-test/components"
+	"templ-test/components"
 
 	"github.com/alexedwards/scs/v2"
 )

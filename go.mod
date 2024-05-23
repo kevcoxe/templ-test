@@ -1,4 +1,4 @@
-module github.com/kevcoxe/templ-test
+module templ-test
 
 go 1.21.6
 
