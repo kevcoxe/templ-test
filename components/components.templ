@@ -1,0 +1,35 @@
+package components
+
+import "strconv"
+
+templ counts(global, user int) {
+	<div>Global: { strconv.Itoa(global) }</div>
+	<div>User: { strconv.Itoa(user) }</div>
+}
+
+templ form() {
+	<form action="/" method="POST" class="flex flex-col">
+		<button
+			type="submit"
+			name="global"
+			value="global"
+		>Global</button>
+		<button
+			type="submit"
+			name="user"
+			value="user"
+			class="btn-light"
+		>User</button>
+	</form>
+}
+
+
+templ HomePage(global, user int) {
+	@layout() {
+		<div class="flex flex-col m-2 p-2 ring-4 ring-red-600 grow">
+			<h1 class="text-xl">Hello there yolo this is a test</h1>
+			@counts(global, user)
+			@form()
+		</div>
+	}
+}

@@ -6,61 +6,37 @@ import (
 	"net/http"
 	"time"
 
+	"kevcoxe/templ-test/handlers"
+
 	"github.com/alexedwards/scs/v2"
+	"github.com/go-chi/chi"
 )
 
-type GlobalState struct {
-	Count int
-}
-
-var global GlobalState
 var sessionManager *scs.SessionManager
-
-func getHandler(w http.ResponseWriter, r *http.Request) {
-	userCount := sessionManager.GetInt(r.Context(), "count")
-	component := page(global.Count, userCount)
-	component.Render(r.Context(), w)
-}
-
-func postHandler(w http.ResponseWriter, r *http.Request) {
-	// Update state.
-	r.ParseForm()
-
-	// Check to see if the global button was pressed.
-	if r.Form.Has("global") {
-		global.Count++
-	}
-	if r.Form.Has("user") {
-		currentCount := sessionManager.GetInt(r.Context(), "count")
-		sessionManager.Put(r.Context(), "count", currentCount+1)
-	}
-
-	// Display the form.
-	getHandler(w, r)
-}
 
 func main() {
 	// Initialize the session.
 	sessionManager = scs.New()
 	sessionManager.Lifetime = 24 * time.Hour
 
-	mux := http.NewServeMux()
+	mux := chi.NewRouter()
+	mux.Use(sessionManager.LoadAndSave)
 
-	// Handle POST and GET requests.
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			postHandler(w, r)
-			return
-		}
-		getHandler(w, r)
+	fs := http.FileServer(http.Dir("assets"))
+	mux.Handle("/assets/*", http.StripPrefix("/assets/", fs))
+
+	// Define your routes here
+	mux.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetHandler(w, r, sessionManager)
 	})
 
-	// Add the middleware.
-	muxWithSessionMiddleware := sessionManager.LoadAndSave(mux)
+	mux.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		handlers.PostHandler(w, r, sessionManager)
+	})
 
 	// Start the server.
-	fmt.Println("listening on http://localhost:8000")
-	if err := http.ListenAndServe("localhost:8000", muxWithSessionMiddleware); err != nil {
+	fmt.Println("listening on http://localhost:3400")
+	if err := http.ListenAndServe("0.0.0.0:3400", mux); err != nil {
 		log.Printf("error listening: %v", err)
 	}
 }

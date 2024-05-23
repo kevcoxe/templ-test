@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply bg-black;
+  @apply text-white;
+}
+
+button {
+  @apply border;
+  @apply rounded-md;
+  @apply m-2 p-2;
+
+  @apply hover:bg-zinc-900;
+}
+@layer components {
+  .btn-light {
+    @apply bg-white text-black;
+    @apply hover:bg-slate-200;
+  }
+}
