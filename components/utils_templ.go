@@ -10,6 +10,29 @@ import "context"
 import "io"
 import "bytes"
 
+import "github.com/alexedwards/scs/v2"
+
+type Message struct {
+	User    string
+	Message string
+	Time    string
+}
+
+type GlobalState struct {
+	Count    int
+	Messages []Message
+}
+
+func getUsername(ctx context.Context, sm *scs.SessionManager) string {
+	var username = sm.GetString(ctx, "username")
+	return username
+}
+
+func getUsernameError(ctx context.Context, sm *scs.SessionManager) string {
+	var usernameError = sm.GetString(ctx, "usernameError")
+	return usernameError
+}
+
 func layout() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -23,7 +46,7 @@ func layout() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link href=\"/assets/css/styles.css\" rel=\"stylesheet\"><script src=\"/assets/js/htmx.min.js\"></script></head><body class=\"mx-auto flex w-screen h-screen\" id=\"main\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><link href=\"/assets/css/styles.css\" rel=\"stylesheet\"><script src=\"/assets/js/htmx.min.js\"></script></head><body class=\"flex w-screen h-screen mx-auto\" id=\"main\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

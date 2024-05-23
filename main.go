@@ -37,6 +37,10 @@ func main() {
 		handlers.PostHandler(w, r, sessionManager)
 	})
 
+	mux.Post("/message", func(w http.ResponseWriter, r *http.Request) {
+		handlers.MessageHandler(w, r, sessionManager)
+	})
+
 	mux.Put("/login", func(w http.ResponseWriter, r *http.Request) {
 		handlers.PutHandler(w, r, sessionManager)
 	})

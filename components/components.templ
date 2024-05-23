@@ -5,6 +5,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 )
 
+
 templ counts(global, user int) {
 	<div>Global: { strconv.Itoa(global) }</div>
 	<div>User: { strconv.Itoa(user) }</div>
@@ -35,13 +36,14 @@ templ form() {
 }
 
 
-templ HomePage(global, user int, ctx context.Context, sm *scs.SessionManager) {
+templ HomePage(global GlobalState, user int, ctx context.Context, sm *scs.SessionManager) {
 	@layout() {
 		@auth(ctx, sm) {
 			<div class="flex flex-col p-2 m-2 grow">
 				<h1 class="text-xl">Hello, { getUsername(ctx, sm) }</h1>
-				@counts(global, user)
+				@counts(global.Count, user)
 				@form()
+				@Messages(global.Messages)
 			</div>
 		}
 	}

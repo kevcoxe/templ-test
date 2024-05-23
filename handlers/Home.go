@@ -3,21 +3,25 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"templ-test/components"
 
 	"github.com/alexedwards/scs/v2"
 )
 
-type GlobalState struct {
-	Count int
+var global components.GlobalState = components.GlobalState{
+	Count: 0,
+	Messages: []components.Message{{
+		User:    "FirstMate",
+		Message: "Well here we are this is the first message.",
+		Time:    time.Now().Format("Mon 15:04:05"),
+	}},
 }
-
-var global GlobalState
 
 func GetHandler(w http.ResponseWriter, r *http.Request, sm *scs.SessionManager) {
 	userCount := sm.GetInt(r.Context(), "count")
-	component := components.HomePage(global.Count, userCount, r.Context(), sm)
+	component := components.HomePage(global, userCount, r.Context(), sm)
 	component.Render(r.Context(), w)
 }
 
@@ -32,6 +36,32 @@ func PostHandler(w http.ResponseWriter, r *http.Request, sm *scs.SessionManager)
 	if r.Form.Has("user") {
 		currentCount := sm.GetInt(r.Context(), "count")
 		sm.Put(r.Context(), "count", currentCount+1)
+	}
+
+	// Display the form.
+	GetHandler(w, r, sm)
+}
+
+func MessageHandler(w http.ResponseWriter, r *http.Request, sm *scs.SessionManager) {
+	// Update state.
+	r.ParseForm()
+
+	message := r.Form.Get("message")
+	if message == "" {
+		GetHandler(w, r, sm)
+		return
+	}
+
+	username := sm.GetString(r.Context(), "username")
+
+	if username != "" {
+
+		global.Messages = append(global.Messages, components.Message{
+			User:    username,
+			Message: message,
+			Time:    time.Now().Format("Mon 15:04:05"),
+		})
+		fmt.Printf("logged in with username: '%v'\n", username)
 	}
 
 	// Display the form.

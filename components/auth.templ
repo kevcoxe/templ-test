@@ -42,16 +42,6 @@ templ logout() {
   </form>
 }
 
-func getUsername (ctx context.Context, sm *scs.SessionManager) string {
-  var username = sm.GetString(ctx, "username")
-  return username
-}
-
-func getUsernameError (ctx context.Context, sm *scs.SessionManager) string {
-  var usernameError = sm.GetString(ctx, "usernameError")
-  return usernameError
-}
-
 templ auth(ctx context.Context, sm *scs.SessionManager) {
   if getUsername(ctx, sm) != "" {
     <div class="flex flex-col w-full h-full">

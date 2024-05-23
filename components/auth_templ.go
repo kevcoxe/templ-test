@@ -83,16 +83,6 @@ func logout() templ.Component {
 	})
 }
 
-func getUsername(ctx context.Context, sm *scs.SessionManager) string {
-	var username = sm.GetString(ctx, "username")
-	return username
-}
-
-func getUsernameError(ctx context.Context, sm *scs.SessionManager) string {
-	var usernameError = sm.GetString(ctx, "usernameError")
-	return usernameError
-}
-
 func auth(ctx context.Context, sm *scs.SessionManager) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)

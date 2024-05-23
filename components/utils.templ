@@ -1,5 +1,29 @@
 package components
 
+import "github.com/alexedwards/scs/v2"
+
+
+type Message struct {
+	User string
+	Message string
+	Time string
+}
+
+type GlobalState struct {
+	Count int
+	Messages []Message
+}
+
+func getUsername (ctx context.Context, sm *scs.SessionManager) string {
+  var username = sm.GetString(ctx, "username")
+  return username
+}
+
+func getUsernameError (ctx context.Context, sm *scs.SessionManager) string {
+  var usernameError = sm.GetString(ctx, "usernameError")
+  return usernameError
+}
+
 
 templ layout() {
 	<!doctype html>
@@ -10,7 +34,7 @@ templ layout() {
 		<link href="/assets/css/styles.css" rel="stylesheet">
 		<script src="/assets/js/htmx.min.js"></script>
 	</head>
-	<body class="mx-auto flex w-screen h-screen" id="main">
+	<body class="flex w-screen h-screen mx-auto" id="main">
 		{ children... }
 	</body>
 	</html>
