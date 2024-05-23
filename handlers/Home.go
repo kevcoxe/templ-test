@@ -42,11 +42,11 @@ func PutHandler(w http.ResponseWriter, r *http.Request, sm *scs.SessionManager) 
 	r.ParseForm()
 
 	username := r.Form.Get("username")
-	fmt.Printf("username: '%v'\n", username)
 
 	if username != "" {
 		sm.Put(r.Context(), "username", username)
 		sm.Remove(r.Context(), "usernameError")
+		fmt.Printf("logged in with username: '%v'\n", username)
 	} else {
 		sm.Put(r.Context(), "usernameError", "Username cannot be empty")
 	}
@@ -55,7 +55,13 @@ func PutHandler(w http.ResponseWriter, r *http.Request, sm *scs.SessionManager) 
 }
 
 func LogoutHandler(w http.ResponseWriter, r *http.Request, sm *scs.SessionManager) {
+	username := sm.GetString(r.Context(), "username")
+
 	sm.Remove(r.Context(), "username")
 	sm.Remove(r.Context(), "count")
+
+	if username != "" {
+		fmt.Printf("user '%v' has logged out\n", username)
+	}
 	GetHandler(w, r, sm)
 }
