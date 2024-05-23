@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 
-	"templ-test/handlers"
+	"github.com/kevcoxe/templ-test/handlers"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi"
