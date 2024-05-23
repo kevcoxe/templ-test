@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"fmt"
-	"kevcoxe/templ-test/components"
 	"net/http"
+	"templ-test/components"
 
 	"github.com/alexedwards/scs/v2"
 )
